@@ -11,3 +11,9 @@ module.exports.listingSchema = Jio.object({
   }).required(),
 });
 
+module.exports.reviewSchema = Jio.object({
+  review:Jio.object({
+    rating:Jio.number().required(),
+    comment:Jio.string().required()
+  }).required()
+});
