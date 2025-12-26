@@ -12,7 +12,8 @@ const wrapAsync = require("./utils/WrapAsync.js");
 const ExpressError = require("./utils/ExpressError.js");
 const { listingSchema,reviewSchema } = require("./schema.js");
 const Listing = require("./model/listing.js");
-
+const sessions = require("express-session");
+const flash = require("connect-flash");
 
 
 const ejsmate = require("ejs-mate");
@@ -31,11 +32,27 @@ async function main() {
   await mongoose.connect(mong_url);
   console.log("database conected")
 }
-
 app.get("/",(req,res)=>{
     res.send("its working");
 });
 
+//cookies and sessions
+ app.use(sessions({
+    secret:"mysupersecret",
+    resave:false,
+    saveUninitialized:true,
+    cookie:{
+      expires:Date.now()+1000*60*60*24*7,
+      maxAge:1000*60*60*24*7,
+      httpOnly:true
+    }
+ }));
+ app.use(flash());
+ //flah middleware
+ app.use((req,res,next)=>{
+    res.locals.success = req.flash("success");
+    next();
+ })
 
 
 

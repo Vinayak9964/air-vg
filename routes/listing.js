@@ -12,7 +12,7 @@ const validateListing = (req,res,next)=>{
     throw new ExpressError(400,error);
 
   }else{
-    next();
+    next(); 
   }
 };
 
@@ -35,7 +35,7 @@ router.post("/",validateListing,
   wrapAsync(async(req,res,next)=>{
   const newlisting = new Listing( req.body.listing);
   await newlisting.save();
-  console.log(newlisting);
+  req.flash("success","New listing created");
   res.redirect("/listings")
   
 })
@@ -52,13 +52,14 @@ router.put("/:id",validateListing,
   wrapAsync(async(req,res)=>{
   const {id} = req.params;
   const Listings = await Listing.findByIdAndUpdate(id,{...req.body.listing});
+  req.flash("success","Listing updated");
   res.redirect(`/listings/${id}`);
 }));
 //delete route
 router.delete("/:id", async(req,res)=>{
   const {id} = req.params;
   listdelete = await Listing.findByIdAndDelete(id);
-  console.log(listdelete);
+  req.flash("success","Listing deleted");
   res.redirect("/listings");
 
 });
